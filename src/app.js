@@ -56,10 +56,51 @@ app.get("/about", (req, res)=>{    // You can add as much e as you can
 app.get("/check/:userID", (req, res)=>{    // You can add as much e as you can
     console.log(req.params);
     
-    res.send("Testing Routes")
+    res.send(`Hello ${req.params.userID}`)
 })
+//end
 
 
+//special case
+const cb0 = function (req, res, next) {
+    console.log('CB0')
+    next()
+  }
+  
+  const cb1 = function (req, res, next) {
+    res.write("I am from 2nd function\n");
+    next()
+  }
+  
+  const cb2 = function (req, res) {
+    res.write('Hello from C!')
+    res.end();
+  }
+  
+  app.get('/example/c', [cb0, cb1, cb2])
+
+//end
+
+
+
+// special case
+
+app.use('/exmp', (req, res, next)=>{
+    console.log("Route run");
+    next()
+    
+},
+(req, res, next)=>{
+    console.log("Next run");
+    next()
+}
+
+)
+
+app.use('/exmp', (req, res)=>{
+    res.send("From 2nd Route")
+})
+//end
 
 
 

@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
+const {adminAuth, userAuth} = require('./middlewares/authAdmin')
 
 
-app.get("/", (req, res)=>{
+app.get("/", (req, res, next)=>{
     res.send("Welcome to the Home Page");
+    
 })
 
 
@@ -14,9 +16,9 @@ app.get("/", (req, res)=>{
 }) */
 
 // It will only give this data for get method
-app.get("/user", (req, res)=>{
-    res.send({firstname: 'Saad', lastname: 'Tanoli'})
-})
+// app.get("/user", (req, res)=>{
+//     res.send({firstname: 'Saad', lastname: 'Tanoli'})
+// })
 
 
 app.get("/te?st", (req, res)=>{    // e is optional here
@@ -101,6 +103,34 @@ app.use('/exmp', (req, res)=>{
     res.send("From 2nd Route")
 })
 //end
+
+
+// Middleware Practical Usage
+
+app.use('/admin', adminAuth)
+
+app.get('/user', userAuth, (req, res)=>{
+    res.send("Welcome User")
+})
+
+app.get('/admin/getData', (req, res, next)=>{
+    res.send("Get All the Data")
+})
+
+app.get('/admin/getData', (req, res, next)=>{
+    res.send("Deleted All the Data")
+})
+//end
+
+
+app.get('/checking', (req, res)=>{
+    try{
+        throw new Error("Error Occured")
+        res.send("Hello World");
+    } catch(err){
+        res.status(500).send("Something Went Wrong")
+    }
+})
 
 
 

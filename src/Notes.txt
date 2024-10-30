@@ -11,3 +11,20 @@ Caret (^) notation in package.json
       Using caret notation it is important to look at our code regularly if it is compatible with the newest version or not.
 
 
+Middleware are the functions which are used in routing and help to reach the exact request handler
+
+app.use('/exmp', (req, res, next)=>{   This is a Middleware
+    console.log("Route run");
+    next()
+    
+},
+(req, res, next)=>{
+    console.log("Next run");     This is a Middleware
+    next()
+}
+
+)
+
+app.use('/exmp', (req, res)=>{
+    res.send("From 2nd Route")     This is a request handler
+})

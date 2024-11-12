@@ -4,15 +4,12 @@ const connectDB = require('./config/database')
 const User = require('./models/user')
 const Admin = require('./models/admin')
 
+app.use(express.json())
 
 app.post('/signup', async(req, res)=>{
-    const user = new User({
-      firstName: "Saad",
-      lastName: "Khan",
-      password: "saad123",
-      email: "saad@gmail.com",
-      phoneNo: "03169230380",
-    })
+  
+  // creating a new instance of User Model
+    const user = new User(req.body)
 
     try{
       await user.save();
@@ -22,12 +19,84 @@ app.post('/signup', async(req, res)=>{
     }
 })
 
+app.get('/user', async(req, res)=>{
+  const userEmail = req.body.email;
+  console.log(userEmail);
+  
+  try{
+  const users = await User.findOne({email: userEmail});
+  console.log(users);
+  
+  if(users){
+    res.status(404).send("User not found")
+  }
+  else{
+    res.send(users)
+  }
+}
+catch (err){
+  res.status(404).send("Something went wrong")
+}
+})
+
+
+
+app.delete('/user', async(req, res)=>{
+  const userEmail = req.body.email;
+  console.log(userEmail);
+  
+  try{
+  const users = await User.findOneAndDelete({email: userEmail});
+  console.log(users);
+  
+  if(users){
+    res.send("User Deleted Successfully")
+  }
+  else{
+    res.status(404).send("User not found")
+  }
+}
+catch (err){
+  res.status(404).send("Something went wrong")
+}
+})
+
+
+
+app.patch('/user', async(req, res)=>{
+  const userId = req.body.userId;
+  const data = req.body;
+  console.log(data);
+  
+
+  try{
+    await User.findByIdAndUpdate({_id: userId}, data)
+    res.send("User Updated Sucessfully")
+  }
+  catch (err){
+    res.status(404).send(`Something went wrong: ${err.message}`)
+  }
+})
+
+
+
+// Display all the users
+app.get('/feed', async(req, res)=>{
+  const allUsers = await User.find({});
+  try{
+    res.send(allUsers)
+  }
+  catch (err){
+    res.status(404).send("Something went wrong")
+  }
+})
+
 
 app.post('/admin', async(req, res)=>{
   const admin = new Admin({
       name: "Saad",
       passcode: "saadi1234",
-      nickname: "saadiii"
+      nickname: "saadiii",
   })
 
   try{

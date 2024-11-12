@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
     phoneNo: {
         type: Number
     },
+    userId: {
+        type: String
+    }
 })
 
 const userModel = mongoose.model("User", userSchema);

@@ -2,23 +2,42 @@ const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
     firstName: {
-        type: String
+        type: String,
+        minLength: 3,
+        required: true
     },
     lastName: {
         type: String
     },
     password: {
-        type: String
+        type: String,
+        required: true
+
     },
     email: {
-        type: String
+        type: String,
+        required: true,
+        unique: true
     },
     phoneNo: {
-        type: Number
+        type: Number,
+        required: true
     },
-    userId: {
+    photo: {
+        type: String,
+        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnSA1zygA3rubv-VK0DrVcQ02Po79kJhXo_A&s"
+    },
+    gender: {
         type: String
+    },
+    age: {
+        type: String
+    },
+    about: {
+        type: String,
+        default: "This is the devtinder user"
     }
+    
 })
 
 const userModel = mongoose.model("User", userSchema);

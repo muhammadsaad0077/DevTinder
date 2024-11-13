@@ -63,6 +63,7 @@ catch (err){
 
 
 
+/*
 app.patch('/user', async(req, res)=>{
   const userId = req.body.userId;
   const data = req.body;
@@ -72,6 +73,19 @@ app.patch('/user', async(req, res)=>{
   try{
     await User.findByIdAndUpdate({_id: userId}, data)
     res.send("User Updated Sucessfully")
+  }
+  catch (err){
+    res.status(404).send(`Something went wrong: ${err.message}`)
+  }
+})
+*/
+
+app.patch('/user', async(req, res)=>{
+  const query = req.body;
+
+  try{
+    await User.findOneAndUpdate(query, { email: "saadii@gmail.com"});
+    res.send("User updated sucessfully")
   }
   catch (err){
     res.status(404).send(`Something went wrong: ${err.message}`)

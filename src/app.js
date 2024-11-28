@@ -28,10 +28,10 @@ app.get('/user', async(req, res)=>{
   console.log(users);
   
   if(users){
-    res.status(404).send("User not found")
+    res.send(users)
   }
   else{
-    res.send(users)
+    res.status(404).send("User not found")
   }
 }
 catch (err){
@@ -63,7 +63,7 @@ catch (err){
 
 
 
-/*
+
 app.patch('/user', async(req, res)=>{
   const userId = req.body.userId;
   const data = req.body;
@@ -71,26 +71,29 @@ app.patch('/user', async(req, res)=>{
   
 
   try{
-    await User.findByIdAndUpdate({_id: userId}, data)
+    await User.findByIdAndUpdate({_id: userId}, data, {
+      returnDocument: 'after',
+      runValidators: true
+    })
     res.send("User Updated Sucessfully")
   }
   catch (err){
     res.status(404).send(`Something went wrong: ${err.message}`)
   }
 })
-*/
 
-app.patch('/user', async(req, res)=>{
-  const query = req.body;
 
-  try{
-    await User.findOneAndUpdate(query, { email: "saadii@gmail.com"});
-    res.send("User updated sucessfully")
-  }
-  catch (err){
-    res.status(404).send(`Something went wrong: ${err.message}`)
-  }
-})
+// app.patch('/user', async(req, res)=>{
+//   const query = req.body;
+
+//   try{
+//     await User.findOneAndUpdate(query, { email: "saad123@gmail.com"});
+//     res.send("User updated sucessfully")
+//   }
+//   catch (err){
+//     res.status(404).send(`Something went wrong: ${err.message}`)
+//   }
+// })
 
 
 

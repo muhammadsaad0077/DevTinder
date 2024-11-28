@@ -28,14 +28,25 @@ const userSchema = new mongoose.Schema({
         default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnSA1zygA3rubv-VK0DrVcQ02Po79kJhXo_A&s"
     },
     gender: {
-        type: String
+        type: String,
+        validate(value){
+            if(!['female', 'male', 'others'.includes(value)]){
+                throw new Error("Gender data is not valid")
+            }
+        }
+        
     },
     age: {
         type: String
+        
+
     },
     about: {
         type: String,
         default: "This is the devtinder user"
+    },
+    skills: {
+        type: [String]
     }
     
 })

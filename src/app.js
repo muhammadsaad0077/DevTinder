@@ -67,7 +67,16 @@ catch (err){
 app.patch('/user', async(req, res)=>{
   const userId = req.body.userId;
   const data = req.body;
-  console.log(data);
+
+  const isAllowed = ["userId", "firstName", "lastName", "age", "gender"];
+
+  const isUpdateAllowed = Object.keys(data).every((k)=>{
+      isAllowed.includes(k);
+  })
+
+  if(!isAllowed){
+    throw new Error("Update not allowed ")
+  }
   
 
   try{

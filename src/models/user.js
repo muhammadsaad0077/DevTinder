@@ -4,24 +4,31 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         minLength: 3,
+        maxLength: 25,
         required: true
     },
     lastName: {
-        type: String
+        type: String,
+        minLength: 2,
+        maxLength: 25
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minLength: 6
 
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
     },
     phoneNo: {
         type: Number,
-        required: true
+        required: true,
+        minLength: 8,
+        maxLength: 25
     },
     photo: {
         type: String,
@@ -37,7 +44,8 @@ const userSchema = new mongoose.Schema({
         
     },
     age: {
-        type: String
+        type: Number,
+        min: 10
         
 
     },
@@ -49,7 +57,7 @@ const userSchema = new mongoose.Schema({
         type: [String]
     }
     
-})
+}, {timestamps: true})
 
 const userModel = mongoose.model("User", userSchema);
 

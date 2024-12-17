@@ -23,9 +23,10 @@ app.post('/signup', async(req, res)=>{
 
   // Hashing a Password
     
-    const passwordHash = await bcrypt(password, 10);
+    const passwordHash = await bcrypt.hash(password, 10);
     console.log(passwordHash);
     
+
 
 
   // creating a new instance of User Model
@@ -61,6 +62,37 @@ app.get('/user', async(req, res)=>{
 catch (err){
   res.status(404).send("Something went wrong")
 }
+})
+
+app.post('/login', async(req, res)=>{
+
+  try{
+  const {email, password} = req.body;
+
+  const user = await User.findOne({email: email});
+
+  if(!user){
+    throw new Error("Invalid Email");
+  }
+
+  const checkPassword = await bcrypt.compare(password, user.password);
+
+  if(!checkPassword){
+    throw new Error("Invalid Password");
+  }
+
+  else{
+    res.send("Sucessfully Logged In");
+  }
+
+
+
+
+
+  }
+  catch(err){
+    res.status(400).send(`Error: ${err}`);
+  }
 })
 
 

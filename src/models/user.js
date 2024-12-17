@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         minLength: 6,
-        maxLength: 20
+        maxLength: 200
 
     },
     email: {
@@ -35,10 +35,8 @@ const userSchema = new mongoose.Schema({
     },
     phoneNo: {
         type: Number,
-        required: true,
-        minLength: 8,
-        maxLength: 25,
-        minLength: 8
+        minLength: 4,
+        maxLength: 25
     },
     photo: {
         type: String,

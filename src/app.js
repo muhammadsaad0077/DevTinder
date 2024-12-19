@@ -72,17 +72,19 @@ app.post('/login', async(req, res)=>{
   const user = await User.findOne({email: email});
 
   if(!user){
-    throw new Error("Invalid Email");
+    throw new Error("Invalid credentials");
   }
 
   const checkPassword = await bcrypt.compare(password, user.password);
 
   if(!checkPassword){
-    throw new Error("Invalid Password");
+    throw new Error("Invalid credentials");
   }
 
   else{
+    res.cookie('token', 'vewivnreivenrveivvevni')
     res.send("Sucessfully Logged In");
+    
   }
 
 

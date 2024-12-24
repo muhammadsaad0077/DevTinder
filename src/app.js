@@ -4,9 +4,12 @@ const connectDB = require('./config/database')
 const User = require('./models/user')
 const Admin = require('./models/admin')
 const bcrypt = require('bcrypt')
+const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken')
 const {validateUserData} = require('./utils/validation')
 
 app.use(express.json())
+app.use(cookieParser())
 
 app.post('/signup', async(req, res)=>{
   
@@ -65,6 +68,7 @@ catch (err){
 })
 
 app.post('/login', async(req, res)=>{
+  
 
   try{
   const {email, password} = req.body;
@@ -82,7 +86,15 @@ app.post('/login', async(req, res)=>{
   }
 
   else{
-    res.cookie('token', 'vewivnreivenrveivvevni')
+
+    const token = await jwt.sign({id: user._id}, 'saad@123')
+    console.log(token);
+
+   
+    
+    
+
+    res.cookie('token', token);
     res.send("Sucessfully Logged In");
     
   }
@@ -95,6 +107,16 @@ app.post('/login', async(req, res)=>{
   catch(err){
     res.status(400).send(`Error: ${err}`);
   }
+})
+
+
+app.get('/profile', async(req, res)=>{
+
+  const cookie = req.cookies;
+  console.log(cookie);
+
+  res.send("Reading cookie...")
+
 })
 
 

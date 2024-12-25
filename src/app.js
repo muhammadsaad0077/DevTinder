@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt')
 const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
 const {validateUserData} = require('./utils/validation')
+const {userAuth} = require('./middlewares/authAdmin')
 
 app.use(express.json())
 app.use(cookieParser())
@@ -110,12 +111,17 @@ app.post('/login', async(req, res)=>{
 })
 
 
-app.get('/profile', async(req, res)=>{
+app.get('/profile', userAuth, async(req, res)=>{
 
-  const cookie = req.cookies;
-  console.log(cookie);
+  try{
+  const user = req.user;
 
-  res.send("Reading cookie...")
+  res.send(user)
+  }
+
+  catch(err){
+    res.status(404).send(`Error: ${err.message}`)
+  }
 
 })
 

@@ -80,7 +80,7 @@ app.post('/login', async(req, res)=>{
     throw new Error("Invalid credentials");
   }
 
-  const checkPassword = await bcrypt.compare(password, user.password);
+  const checkPassword = await user.comparePassword(password);
 
   if(!checkPassword){
     throw new Error("Invalid credentials");
@@ -88,7 +88,12 @@ app.post('/login', async(req, res)=>{
 
   else{
 
-    const token = await jwt.sign({id: user._id}, 'saad@123')
+    // This logic can also be used but the best practice is to use user related things in schema (Topic: Mongoose Schema),
+    // this makes our code cleaner and much reusable
+   // const token = await jwt.sign({id: user._id}, 'saad@123')
+
+   const token = await user.getJWT();
+
     console.log(token);
 
    
@@ -122,6 +127,14 @@ app.get('/profile', userAuth, async(req, res)=>{
   catch(err){
     res.status(404).send(`Error: ${err.message}`)
   }
+
+})
+
+app.post('/connection', userAuth, (req, res)=>{
+
+  const user = req.user;
+
+  res.send(`${user.firstName} Connection Request Send`);
 
 })
 

@@ -1,5 +1,8 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const User = require('')
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -77,6 +80,24 @@ const userSchema = new mongoose.Schema({
     }
     
 }, {timestamps: true})
+
+userSchema.methods.getJWT = async function(){   // always use normal function here because the keyword this has different behaviour in arrow function
+    const user = this;  // Here the this refers to the current user
+
+    const token = await jwt.sign({id: user._id}, 'saad@123')
+
+    return token;
+}
+
+userSchema.methods.comparePassword = async function(passwordInputByUser){
+    const user = this;
+    const passwordHash = user.password
+    const checkPassword = await bcrypt.compare(passwordInputByUser, passwordHash);
+    return checkPassword;
+
+}
+
+
 
 const userModel = mongoose.model("User", userSchema);
 

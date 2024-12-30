@@ -21,7 +21,7 @@ authRouter.post('/signup', async(req, res)=>{
   // Hashing a Password
     
     const passwordHash = await bcrypt.hash(password, 10);
-    console.log(passwordHash);
+    
     
 
 
@@ -68,14 +68,7 @@ authRouter.post('/login', async(req, res)=>{
   
      const token = await user.getJWT();
   
-      console.log(token);
-  
-     
-      
-      
-  
       res.cookie('token', token);
-      console.log(`${user.firstName} Sucessfully Logged In`);
       
       res.send(`${user.firstName} Sucessfully Logged In`);
       
@@ -86,6 +79,15 @@ authRouter.post('/login', async(req, res)=>{
       res.status(400).send(`Error: ${err}`);
     }
   })
+
+
+authRouter.post('/logout', (req, res)=>{
+  const { email } = req.body;
+  res.cookie('token', null, {
+    expires:  new Date(Date.now())
+  })
+  res.send(`${email } logged out`)
+})
 
 module.exports = authRouter;
 

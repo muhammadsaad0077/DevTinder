@@ -3,6 +3,7 @@ const profileRouter = express.Router();
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const {userAuth} = require('../middlewares/authAdmin')
+const allowedData = require('../utils/validation')
 
 profileRouter.get('/profile/view', userAuth, async(req, res)=>{
 
@@ -18,12 +19,23 @@ profileRouter.get('/profile/view', userAuth, async(req, res)=>{
   
   })
 
-profileRouter.patch('/profile/edit', async(req, res)=>{
+profileRouter.patch('/profile/edit', userAuth, async(req, res)=>{
   try{
-  const { email, firstName, lastName, password } = req.body;
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = await User.findOneAndUpdate({email: email}, {firstName: firstName,lastName: lastName, password: passwordHash}, {new: true, runValidators: true})
-  if(user){
+
+   if(!allowedData(req)){
+    throw new Error("Invalid field edit")
+   }
+
+   const user = req.user;
+
+   const { firstName, lastName, password, age, gender, photo, about, skills, phoneNo } = user;
+
+   console.log(user);
+   
+   const passwordHash = await bcrypt.hash(password, 10);
+   const updatedUser = await User.updateOne({firstName: firstName,lastName: lastName, password: passwordHash, age: age, gender: gender, photo: photo, about: about, skills: skills, phoneNo: phoneNo }, {new: true, runValidators: true})
+  
+  if(updatedUser){
     
     res.send("User updated successfully")
   }

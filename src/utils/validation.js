@@ -18,14 +18,26 @@ const validateUserData = (req)=>{
 
 }
 
+const validateStrongPassword = (req)=>{
+    const data = req.body;
+    const {password} = data;
 
-const allowedData = (req)=>{
-    ["firstName", "lastName", "password", "skills", "about", "photo", "gender", "age", "phoneNo"];
-const isValid = Object.keys(req.body).every((field) =>{
-    allowedData.includes(field);
-} )
+    if(!validator.isStrongPassword(password)){
+        throw new Error("Please Enter a strong password")
+    }
+
 }
 
-return allowedData;
 
-module.exports = {validateUserData, allowedData}
+const allowedData = (req) => {
+    const isAllowedFields = ["firstName", "lastName", "password", "skills", "about", "photo", "gender", "age", "phoneNo"];
+    const isValid = Object.keys(req.body).every((field) =>{
+      return isAllowedFields.includes(field);
+    
+ } )
+ return isValid;
+ }
+
+
+
+module.exports = {validateUserData, allowedData, validateStrongPassword}

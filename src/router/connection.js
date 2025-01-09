@@ -21,7 +21,7 @@ connectionRouter.post('/connection/send/:status/:toUserId', userAuth, async(req,
       throw new Error("Invalid status type")
     }
 
-    if(fromUserId === toUserId){
+    if(fromUserId == toUserId){
       throw new Error("You can't send a request to yourself")
     }
 
@@ -73,8 +73,76 @@ connectionRouter.post('/connection/send/:status/:toUserId', userAuth, async(req,
   })
 
 
-connectionRouter.post('/connection/request/:status/:userId', userAuth, async(req, res)=>{
+connectionRouter.post('/connection/review/:status/:requestId', userAuth, async(req, res)=>{
 
+  // status => valid
+  // requestId => valid
+  // loggedInUser => toUserId
+  // accept or reject
+
+  try{
+
+  const user = req.user;
+  const userId = user._id;
+  const status = req.params.status;
+  const requestId = req.params.requestId;
+
+  // user login - requestId provide - request exist - if exist then options -> accept | reject
+
+  if(requestId == userId){
+    throw new Error("You can't accept or reject request of yourself!")
+  }
+
+  const allowedStatus = ["accepted", "rejected"];
+
+  if(!allowedStatus.includes(status)){
+    throw new Error("Invalid status type");
+  }
+
+  const recieverUserName = await User.findById(requestId);
+
+  if(!recieverUserName){
+    throw new Error("User not found")
+  }
+
+  
+
+  
+
+  const requestExist = await ConnectionRequestModel.findOne({
+    $and: [
+      {
+        fromUserId: requestId
+      },
+      {
+        toUserId: userId
+      }
+    ]
+  })
+
+  if(!requestExist){
+    throw new Error("Request does not exist")
+  }
+
+  if(requestExist.status == "ignored"){
+    res.json({message: `You can't accept or reject the request! because ${user.firstName} is ignored by ${recieverUserName.firstName}`});
+  }
+
+
+  if(status=="accepted"){
+    res.json({message: `${user.firstName} accepted request of ${recieverUserName.firstName}`});
+  }
+  else{
+    res.json({message: `${user.firstName} is rejected request of ${recieverUserName.firstName}`});
+  }
+
+
+
+}
+
+catch(err){
+  res.status(400).send(`Error: ${err.message}`)
+}
 
 
 })

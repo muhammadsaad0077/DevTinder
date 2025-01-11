@@ -5,7 +5,7 @@ const userRouter = express.Router();
 
 
 // Display all the users
-userRouter.get('/feed', async(req, res)=>{
+userRouter.get('/user/feed', async(req, res)=>{
     const allUsers = await User.find({});
     try{
       res.send(allUsers)
@@ -20,7 +20,9 @@ userRouter.get('/user/request', userAuth, async(req, res) => {
   try{
   const user = req.user;
 
-  const pendingRequests = await ConnectionRequestModel.find({toUserId: user._id, status: "interested"});
+  const pendingRequests = await ConnectionRequestModel.find(
+    {toUserId: user._id, status: "interested"}).populate("fromUserId", ["firstName", "lastName", "photo", "skills", "about"]);
+    // populate can also be written as populate("fromUserId", "firstName lastName photo skills aboutl")
 
   if(pendingRequests == 0){
     res.json({message: `No Pending Requests Found `})
@@ -31,6 +33,52 @@ userRouter.get('/user/request', userAuth, async(req, res) => {
   }
   catch(err){
     res.status(400).send(`Error: ${err.message}`);
+  }
+
+})
+
+userRouter.get('/user/connections', userAuth, async(req, res) =>{
+
+  try{
+  const user = req.user;
+  const connections = await ConnectionRequestModel.find({
+    $or: [
+      {
+        fromUserId: user._id,
+        status: "accepted"
+      },
+      {
+        toUserId: user._id,
+        status: "accepted"
+      }
+    ]
+  }).populate("fromUserId", ["firstName", "lastName", "photo", "skills", "about"]).populate("toUserId", ["firstName", "lastName", "photo", "skills", "about"])
+
+  console.log(connections);
+
+  const data = connections.map((row)=>{
+    if(row.fromUserId._id.toString() === user._id.toString()){
+      return row.toUserId;
+    }
+    else{
+      return row.fromUserId;
+    }
+  })
+
+  
+  
+
+
+  if(connections == 0){
+    res.json({message: `${user.firstName} You Don't Have Any Connections`})
+  }
+
+  res.json({message: `${user.firstName} here is your all connections `, data})
+
+  }
+
+  catch(err){
+    res.status(400).send(`Error: ${err.message}`)
   }
 
 })

@@ -110,30 +110,28 @@ connectionRouter.post('/connection/review/:status/:requestId', userAuth, async(r
   
 
   const requestExist = await ConnectionRequestModel.findOne({
-    $and: [
-      {
-        fromUserId: requestId
-      },
-      {
-        toUserId: userId
-      }
-    ]
+    fromUserId: requestId,
+    toUserId: userId,
+    status: "interested"
   })
+  
 
   if(!requestExist){
     throw new Error("Request does not exist")
   }
 
-  if(requestExist.status == "ignored"){
-    res.json({message: `You can't accept or reject the request! because ${user.firstName} is ignored by ${recieverUserName.firstName}`});
-  }
-
+  requestExist.status = status;
+  const data = await requestExist.save();
 
   if(status=="accepted"){
-    res.json({message: `${user.firstName} accepted request of ${recieverUserName.firstName}`});
+    
+    res.json({message: `${user.firstName} accepted request of ${recieverUserName.firstName}`, data});
+    
   }
   else{
-    res.json({message: `${user.firstName} is rejected request of ${recieverUserName.firstName}`});
+    
+    res.json({message: `${user.firstName} is rejected request of ${recieverUserName.firstName}`, data});
+    
   }
 
 

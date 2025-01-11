@@ -1,4 +1,6 @@
-const express = require('express')
+const express = require('express');
+const { userAuth } = require('../middlewares/authAdmin');
+const ConnectionRequestModel = require('../models/connectionRequest');
 const userRouter = express.Router();
 
 
@@ -13,8 +15,28 @@ userRouter.get('/feed', async(req, res)=>{
     }
   })
 
+userRouter.get('/user/request', userAuth, async(req, res) => {
 
-  userRouter.patch('/user', async(req, res)=>{
+  try{
+  const user = req.user;
+
+  const pendingRequests = await ConnectionRequestModel.find({toUserId: user._id, status: "interested"});
+
+  if(pendingRequests == 0){
+    res.json({message: `No Pending Requests Found `})
+  }
+
+  res.json({message: `${user.firstName} Your All Pending Requests Here `, pendingRequests})
+
+  }
+  catch(err){
+    res.status(400).send(`Error: ${err.message}`);
+  }
+
+})
+
+
+  /*userRouter.patch('/user', async(req, res)=>{
     const userId = req.body.userId;
     const data = req.body;
   
@@ -59,7 +81,7 @@ userRouter.get('/feed', async(req, res)=>{
   catch (err){
     res.status(404).send("Something went wrong")
   }
-  })
+  })*/
 
 
   // app.patch('/user', async(req, res)=>{
@@ -73,3 +95,5 @@ userRouter.get('/feed', async(req, res)=>{
 //     res.status(404).send(`Something went wrong: ${err.message}`)
 //   }
 // })
+
+module.exports = userRouter;

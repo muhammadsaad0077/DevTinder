@@ -2,16 +2,63 @@ const express = require('express');
 const { userAuth } = require('../middlewares/authAdmin');
 const ConnectionRequestModel = require('../models/connectionRequest');
 const userRouter = express.Router();
+const User = require('../models/user')
 
 
 // Display all the users
-userRouter.get('/user/feed', async(req, res)=>{
-    const allUsers = await User.find({});
+userRouter.get('/user/feed', userAuth, async(req, res)=>{
+    
     try{
-      res.send(allUsers)
+    
+      // Saad => Logged in => should not see his profile => should not see the users who are already connections
+      // ignored, interested
+
+      const loggedInUser = req.user;
+
+      const requestedUsers = await ConnectionRequestModel.find({
+        $or: [
+          {
+            fromUserId: loggedInUser._id
+          }, 
+          {
+            toUserId: loggedInUser._id
+          }
+        ]
+      });
+
+      const hideUsersFromFeed = new Set(); // set is a data structure which works same as the array but
+      // the difference is it not store duplicate data
+
+      requestedUsers.forEach(connection => {
+        hideUsersFromFeed.add(connection.fromUserId.toString());
+        hideUsersFromFeed.add(connection.toUserId.toString());
+      });
+
+      
+
+    /*  const allUfilteredUserssers = await User.find({
+        $not: {
+          fromU
+        }
+      })*/
+
+      const allUsers = await User.find({});
+
+      const filteredUsers = allUsers.filter(user => {
+        return !hideUsersFromFeed.has(user._id.toString())
+      })
+
+      console.log(filteredUsers);
+      
+      
+
+      
+  
+      res.json({message: "All requested users fetched", hideUsersFromFeed})
+
     }
     catch (err){
-      res.status(404).send("Something went wrong")
+      res.status(404).send("Something went wrong " + err.message)
     }
   })
 

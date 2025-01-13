@@ -42,19 +42,13 @@ userRouter.get('/user/feed', userAuth, async(req, res)=>{
         }
       })*/
 
-      const allUsers = await User.find({});
+      const allUsers = await User.find({}).select("firstName lastName about skills photo");
 
       const filteredUsers = allUsers.filter(user => {
         return !hideUsersFromFeed.has(user._id.toString())
       })
-
-      console.log(filteredUsers);
-      
-      
-
-      
   
-      res.json({message: "All requested users fetched", hideUsersFromFeed})
+      res.json({message: "All requested users fetched", filteredUsers})
 
     }
     catch (err){

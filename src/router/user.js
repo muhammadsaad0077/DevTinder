@@ -8,53 +8,66 @@ const User = require('../models/user')
 // Display all the users
 userRouter.get('/user/feed', userAuth, async(req, res)=>{
     
-    try{
-    
-      // Saad => Logged in => should not see his profile => should not see the users who are already connections
-      // ignored, interested
-
-      const loggedInUser = req.user;
-
-      const requestedUsers = await ConnectionRequestModel.find({
-        $or: [
-          {
-            fromUserId: loggedInUser._id
-          }, 
-          {
-            toUserId: loggedInUser._id
-          }
-        ]
-      });
-
-      const hideUsersFromFeed = new Set(); // set is a data structure which works same as the array but
-      // the difference is it not store duplicate data
-
-      requestedUsers.forEach(connection => {
-        hideUsersFromFeed.add(connection.fromUserId.toString());
-        hideUsersFromFeed.add(connection.toUserId.toString());
-      });
-
-      
-
-    /*  const allUfilteredUserssers = await User.find({
-        $not: {
-          fromU
-        }
-      })*/
-
-      const allUsers = await User.find({}).select("firstName lastName about skills photo");
-
-      const filteredUsers = allUsers.filter(user => {
-        return !hideUsersFromFeed.has(user._id.toString())
-      })
+  try{
   
-      res.json({message: "All requested users fetched", filteredUsers})
+    // Saad => Logged in => should not see his profile => should not see the users who are already connections
+    // ignored, interested
 
-    }
-    catch (err){
-      res.status(404).send("Something went wrong " + err.message)
-    }
-  })
+    const loggedInUser = req.user;
+
+    let limit = parseInt(req.query.limit) || 10;
+    limit = limit > 50 ? 50 : limit;
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * limit;
+    
+    const skill = req.query.skill;
+
+
+    const requestedUsers = await ConnectionRequestModel.find({
+      $or: [
+        {
+          fromUserId: loggedInUser._id
+        }, 
+        {
+          toUserId: loggedInUser._id
+        }
+      ]
+    });
+
+    const hideUsersFromFeed = new Set(); // set is a data structure which works same as the array but
+    // the difference is it not store duplicate data
+
+    requestedUsers.forEach(connection => {
+      hideUsersFromFeed.add(connection.fromUserId.toString());
+      hideUsersFromFeed.add(connection.toUserId.toString());
+    });
+
+    
+
+  /*  const allUfilteredUserssers = await User.find({
+      $not: {
+        fromU
+      }
+    })*/
+
+    const allUsers = await User.find({}).select("firstName lastName about skills photo").skip(skip).limit(limit);
+
+    const filteredUsers = allUsers.filter(user => {
+      const isHiddenUser = !hideUsersFromFeed.has(user._id.toString());
+      const matchingSkill = skill ? user.skills.includes(skill) : true;
+      const isLoggedInUser = user._id.toString() != loggedInUser._id.toString();
+      
+      
+      return isHiddenUser && matchingSkill && isLoggedInUser;
+    })
+
+    res.json({message: "All requested users fetched", filteredUsers})
+
+  }
+  catch (err){
+    res.status(404).send("Something went wrong " + err.message)
+  }
+})
 
 userRouter.get('/user/request', userAuth, async(req, res) => {
 
@@ -186,3 +199,4 @@ userRouter.get('/user/connections', userAuth, async(req, res) =>{
 // })
 
 module.exports = userRouter;
+

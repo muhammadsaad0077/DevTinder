@@ -54,11 +54,18 @@ userRouter.get('/user/feed', userAuth, async(req, res)=>{
 
     const filteredUsers = allUsers.filter(user => {
       const isHiddenUser = !hideUsersFromFeed.has(user._id.toString());
-      const matchingSkill = skill ? user.skills.includes(skill) : true;
+
+      const matchingSkill = user.skills.some(skill => loggedInUser.skills.includes(skill));
+
+      console.log(`${user.firstName} skills ${matchingSkill}`);
+      
+      
+      const specificSkill = skill ? user.skills.includes(skill) : true;
+
       const isLoggedInUser = user._id.toString() != loggedInUser._id.toString();
       
       
-      return isHiddenUser && matchingSkill && isLoggedInUser;
+      return isHiddenUser && specificSkill && isLoggedInUser && matchingSkill;
     })
 
     res.json({message: "All requested users fetched", filteredUsers})

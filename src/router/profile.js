@@ -63,7 +63,7 @@ catch(err){
 }
 })
 
-profileRouter.patch('/profile/forget-password', userAuth, async(req, res)=>{
+profileRouter.patch('/profile/forget-password', async(req, res)=>{
 
   try{
   const {email, password} = req.body;

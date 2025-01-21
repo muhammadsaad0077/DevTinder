@@ -70,7 +70,7 @@ authRouter.post('/login', async(req, res)=>{
   
       res.cookie('token', token);
       
-      res.send(`${user.firstName} Sucessfully Logged In`);
+      res.send(user);
       
     }
   

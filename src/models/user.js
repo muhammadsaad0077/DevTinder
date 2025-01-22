@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
     },
     photo: {
         type: String,
-        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnSA1zygA3rubv-VK0DrVcQ02Po79kJhXo_A&s",
+        default: "https://img.freepik.com/premium-photo/businessman-standing-with-cross-hand-looking-right-black-suit-indian-pakistani-model_561639-118.jpg",
         maxLength: 200,
         validate(value){
             if(!validator.isURL(value)){

@@ -56,8 +56,6 @@ userRouter.get('/user/feed', userAuth, async(req, res)=>{
       const isHiddenUser = !hideUsersFromFeed.has(user._id.toString());
 
       const matchingSkill = user.skills.some(skill => loggedInUser.skills.includes(skill));
-
-      console.log(`${user.firstName} skills ${matchingSkill}`);
       
       
       const specificSkill = skill ? user.skills.includes(skill) : true;
@@ -115,7 +113,7 @@ userRouter.get('/user/connections', userAuth, async(req, res) =>{
     ]
   }).populate("fromUserId", ["firstName", "lastName", "photo", "skills", "about"]).populate("toUserId", ["firstName", "lastName", "photo", "skills", "about"])
 
-  console.log(connections);
+  
 
   const data = connections.map((row)=>{
     if(row.fromUserId._id.toString() === user._id.toString()){

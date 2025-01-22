@@ -2,7 +2,8 @@ const express = require('express')
 const authRouter = express.Router();
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
-const {validateUserData} = require('../utils/validation')
+const {validateUserData} = require('../utils/validation');
+const { userAuth } = require('../middlewares/authAdmin');
 
 
 authRouter.post('/signup', async(req, res)=>{
@@ -81,7 +82,7 @@ authRouter.post('/login', async(req, res)=>{
   })
 
 
-authRouter.post('/logout', (req, res)=>{
+authRouter.post('/logout', userAuth, (req, res)=>{
   const { email } = req.body;
   res.cookie('token', null, {
     expires:  new Date(Date.now())

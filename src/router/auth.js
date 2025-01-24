@@ -16,7 +16,7 @@ authRouter.post('/signup', async(req, res)=>{
 
     validateUserData(req);
 
-    const {firstName, lastName, email, password} = req.body; 
+    const {firstName, lastName, email, password, skills, about, photoUrl, age, phoneNo} = req.body; 
 
 
   // Hashing a Password
@@ -29,14 +29,14 @@ authRouter.post('/signup', async(req, res)=>{
 
   // creating a new instance of User Model
     const user = new User({
-      firstName, lastName, email, password: passwordHash
+      firstName, lastName, email, password: passwordHash, skills: skills, about: about, photoUrl: photoUrl, age: age, phoneNo: phoneNo
     })
 
 
   // Saving Data in database
     
       await user.save();
-      res.send("User added sucessfully")
+      res.send(user)
     } catch(err){
       res.status(400).send(`Error occured: ${err.message}`)
     }

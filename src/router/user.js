@@ -55,15 +55,15 @@ userRouter.get('/user/feed', userAuth, async(req, res)=>{
     const filteredUsers = allUsers.filter(user => {
       const isHiddenUser = !hideUsersFromFeed.has(user._id.toString());
 
-      const matchingSkill = user.skills.some(skill => loggedInUser.skills.includes(skill));
+     // const matchingSkill = user.skills.some(skill => loggedInUser.skills.includes(skill));
       
       
-      const specificSkill = skill ? user.skills.includes(skill) : true;
+     // const specificSkill = skill ? user.skills.includes(skill) : true;
 
       const isLoggedInUser = user._id.toString() != loggedInUser._id.toString();
       
       
-      return isHiddenUser && specificSkill && isLoggedInUser && matchingSkill;
+      return isHiddenUser && isLoggedInUser //&& specificSkill && matchingSkill;
     })
 
     res.json({message: "All requested users fetched", filteredUsers})
@@ -84,7 +84,7 @@ userRouter.get('/user/request', userAuth, async(req, res) => {
     // populate can also be written as populate("fromUserId", "firstName lastName photo skills aboutl")
 
   if(pendingRequests == 0){
-    res.json({message: `No Pending Requests Found `})
+    return res.json({message: `No Pending Requests Found `})
   }
 
   res.json({message: `${user.firstName} Your All Pending Requests Here `, pendingRequests})
@@ -129,7 +129,7 @@ userRouter.get('/user/connections', userAuth, async(req, res) =>{
 
 
   if(connections == 0){
-    res.json({message: `${user.firstName} You Don't Have Any Connections`})
+    return res.json({message: `${user.firstName} You Don't Have Any Connections`})
   }
 
   res.json({message: `${user.firstName} here is your all connections `, data})

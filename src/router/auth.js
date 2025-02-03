@@ -32,6 +32,9 @@ authRouter.post('/signup', async(req, res)=>{
       firstName, lastName, email, password: passwordHash, skills: skills, about: about, photoUrl: photoUrl, age: age, phoneNo: phoneNo
     })
 
+    const token = await user.getJWT();
+  
+      res.cookie('token', token);
 
   // Saving Data in database
     

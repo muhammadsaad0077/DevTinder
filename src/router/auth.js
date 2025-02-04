@@ -7,8 +7,6 @@ const { userAuth } = require('../middlewares/authAdmin');
 
 
 authRouter.post('/signup', async(req, res)=>{
-  
-  
 
     try{
 
@@ -22,10 +20,6 @@ authRouter.post('/signup', async(req, res)=>{
   // Hashing a Password
     
     const passwordHash = await bcrypt.hash(password, 10);
-    
-    
-
-
 
   // creating a new instance of User Model
     const user = new User({
@@ -33,7 +27,6 @@ authRouter.post('/signup', async(req, res)=>{
     })
 
     const token = await user.getJWT();
-  
       res.cookie('token', token);
 
   // Saving Data in database

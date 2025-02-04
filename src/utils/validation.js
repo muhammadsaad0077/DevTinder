@@ -38,6 +38,4 @@ const allowedData = (req) => {
  return isValid;
  }
 
-
-
 module.exports = {validateUserData, allowedData, validateStrongPassword}

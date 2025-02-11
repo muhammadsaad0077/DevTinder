@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt')
 const {validateUserData} = require('../utils/validation');
 const { userAuth } = require('../middlewares/authAdmin');
 
-
 authRouter.post('/signup', async(req, res)=>{
 
     try{

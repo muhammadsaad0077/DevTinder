@@ -4,7 +4,6 @@ const ConnectionRequestModel = require('../models/connectionRequest');
 const userRouter = express.Router();
 const User = require('../models/user')
 
-
 // Display all the users
 userRouter.get('/user/feed', userAuth, async(req, res)=>{
     
@@ -21,7 +20,6 @@ userRouter.get('/user/feed', userAuth, async(req, res)=>{
     const skip = (page - 1) * limit;
     
     const skill = req.query.skill;
-
 
     const requestedUsers = await ConnectionRequestModel.find({
       $or: [
@@ -41,9 +39,7 @@ userRouter.get('/user/feed', userAuth, async(req, res)=>{
       hideUsersFromFeed.add(connection.fromUserId.toString());
       hideUsersFromFeed.add(connection.toUserId.toString());
     });
-
-    
-
+   
   /*  const allUfilteredUserssers = await User.find({
       $not: {
         fromU
@@ -125,9 +121,6 @@ userRouter.get('/user/connections', userAuth, async(req, res) =>{
   })
 
   
-  
-
-
   if(connections == 0){
     return res.json({message: `${user.firstName} You Don't Have Any Connections`})
   }

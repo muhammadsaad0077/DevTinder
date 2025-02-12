@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
 const connectDB = async ()=>{
-    await mongoose.connect("mongodb+srv://saad:saadi007@backend-learning.fbxi8.mongodb.net/devTinder")
+    await mongoose.connect(process.env.DB_Connection_String, {
+        readPreference: 'secondaryPreferred' // Optional if you want to read from secondaries
+      })
 };
 
 module.exports = connectDB;

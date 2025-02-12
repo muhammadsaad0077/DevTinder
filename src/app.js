@@ -7,6 +7,7 @@ const profileRouter = require('./router/profile')
 const connectionRouter = require('./router/connection');
 const userRouter = require('./router/user');
 const cors = require('cors')
+require('dotenv').config()
 
 app.use(cors({
   origin: "http://localhost:5173",
@@ -26,7 +27,7 @@ connectDB()
 .then(()=>{
     console.log("Database established...");
 
-    app.listen(3001, ()=>{
+    app.listen(process.env.PORT, ()=>{
         console.log("Server is successfully listening on 3001"); 
         })
     

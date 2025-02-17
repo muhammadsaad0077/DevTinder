@@ -6,7 +6,8 @@ const authRouter = require('./router/auth')
 const profileRouter = require('./router/profile')
 const connectionRouter = require('./router/connection');
 const userRouter = require('./router/user');
-const cors = require('cors')
+const cors = require('cors');
+const paymentRouter = require('./router/payment');
 require('dotenv').config()
 
 app.use(cors({
@@ -21,6 +22,7 @@ app.use('/', authRouter);
 app.use('/', profileRouter);
 app.use('/', connectionRouter);
 app.use('/', userRouter);
+app.use('/', paymentRouter);
 
 
 connectDB()

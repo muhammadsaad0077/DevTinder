@@ -9,7 +9,7 @@ const userRouter = require('./router/user');
 const cors = require('cors');
 const http = require('http')
 const paymentRouter = require('./router/payment');
-const intializeSocket = require('./utils/sockets');
+const intializeSocket = require('./utils/socket');
 require('dotenv').config()
 
 app.use(cors({

@@ -12,7 +12,7 @@ const intializeSocket = (server) =>{
     io.on("connection", (socket)=>{
       // Handle Connection
       socket.on("joinChat", ({firstName, userId, targetUserId})=>{
-        const roomId = [userId, targetUserId].sort().join("_")
+        const roomId = [userId, targetUserId].sort().join("_") // We can also create a more secure roomId using crypto library and it is a recomended way
         console.log(firstName + " Joined Room: "+roomId);         
         socket.join(roomId);
       });
